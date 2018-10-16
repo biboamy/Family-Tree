@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html ng-app="myApp" ng-controller="PeopleController">
+<head>
+  <title>guitar club family tree</title>
+  <meta http-equiv="content-language" content="zh-tw">
+  <meta charset="utf-8" />
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/leaf_position.css" rel="stylesheet">
+    <link type="text/css" href="css/Spacetree.css" rel="stylesheet" />
+    <link rel="stylesheet" media="screen and (max-width: 540px)" href="css/small.css">
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script>
+    <script src= "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script language="javascript" type="text/javascript" src="jit.js"></script>
+    <script src="jquery.ui.touch-punch.min.js"></script>
+
+    
+</head>
+<body >
+    <div id="left_bar">
+      <div id="string">
+        <img class="tree" src="img/tree.png">
+      </div>
+      <div id="contain" >
+        <div class="people {{x.year}} {{x.id}} ui-widget-content" ng-repeat="x in people" data-id="{{$index}}" ng-init="onload(x.year, x.id)" ng-mouseover="infodisplay(x.name, x.year, x.leader, x.member, x.child)" ng-click="drop($index, x.name)" ng-slider draggable></div>
+        <div id="infovis" style="display: none;"></div>    
+      </div>
+    </div>
+    <!--right bar--> 
+    <div id="right_bar">
+      <div id="search">
+        <div class="title">搜尋</div>
+        <select class="search_year" ng-model="s_year"  ng-change="selectyear(s_year)">
+          <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+        </select>
+      </div>
+      <hr class="h_color">
+      <div id="profile">
+        <div class="title">小檔案</div>
+        <div class="name s_title">姓名:</div>
+        <div class="year s_title">級數:</div>
+        <div class="leader s_title">團長:</div>
+        <div class="member s_title">團員:</div>
+        <div class="child s_title">孩子:</div>
+      </div>
+    </div>
+
+
+    <script type="text/javascript">
+      
+
+      function find_child(name, json){
+        $.getJSON("family_tree.json", function(person){
+          for (var i=0; i<person.people.length; i++){
+            if(name == person.people[i].name){
+              if(person.people[i].child != ""){
+                for(var j=0; j<person.people[i].child.length; j++){
+                  var child = {
+                      id: person.people[i].child[j],
+                      name: person.people[i].child[j],
+                      data: {},
+                      children: []
+                  };
+                  find_child(person.people[i].child[j], child);
+                  json.children.push(child);
+                }
+              }
+            }
+          }   
+          json = JSON.stringify(json.children);   
+        });
+        
+      }
+      
+      function create_json(name){
+        $.getJSON("family_tree.json", function(person){
+          for (var i=0; i<person.people.length; i++){
+            if(name == person.people[i].name){
+              var jfile = {id: name, name: name, data: {}, children: []};
+              if(person.people[i].child != ""){
+                for(var j=0; j<person.people[i].child.length; j++){
+                  var child = {
+                      id: person.people[i].child[j],
+                      name: person.people[i].child[j],
+                      data: {},
+                      children: []
+                  };
+                  find_child(person.people[i].child[j], child);
+                  jfile.children.push(child);
+                }
+              }
+              setTimeout(function() { familytree(name, jfile); }, 1000);
+
+            }  
+          } 
+          
+        });  
+     
+      }
+
+
+      function info_display(name){
+        $.getJSON("family_tree.json", function(person){
+          for (var i=0; i<person.people.length; i++){
+            if(name == person.people[i].name){
+              $(".name p").remove();
+              $(".name").append( "<p>"+ name + "</p>" );
+              $(".year p").remove();
+              $(".year").append( "<p>"+ person.people[i].year + "</p>" );
+              $(".leader p").remove();
+              $(".leader").append( "<p>"+ person.people[i].leader + "</p>" );
+              $(".member p").remove();
+              $(".member").append( "<p>"+ person.people[i].member + "</p>" );
+              $(".child p").remove();
+              $(".child").append( "<p>"+ person.people[i].child + "</p>" );
+            }
+          }
+        });
+      }
+      function familytree(name, json){
+              
+$.getJSON("json.json", function(person){
+  console.log(person);
+       
+              $('#infovis div').remove();
+              $('#infovis').fadeIn(2500);
+                    
+                    //init data                
+                      //end
+                      //init Spacetree
+                      //Create a new ST instance
+                      var st = new $jit.ST({
+                          //id of viz container element
+                          injectInto: 'infovis',
+                          //set duration for the animation
+                          orientation:"top",
+                          duration: 800,
+                          //set animation transition type
+                          transition: $jit.Trans.Quart.easeInOut,
+                          //set distance between node and its children
+                          levelDistance: 30,
+                          height : 600,
+                          width  : 1400,
+                          constrained: false,
+                          levelsToShow: 100,
+                          //enable panning
+                          Navigation: {
+                            enable:true,
+                            panning:true
+                          },
+                          //set node and edge styles
+                          //set overridable=true for styling individual
+                          //nodes or edges
+                          Node: {
+                              height: 83,
+                              width: 71,
+                              type: 'none',
+                              color: '#aaa',
+                              overridable: true
+                          },
+                          
+                          Edge: {
+                              type: 'bezier',
+                              lineWidth: 1,
+                              color: '#8a8a8a',
+                              overridable: true,
+                        
+                          },
+                          
+                          
+                          
+                          //This method is called on DOM label creation.
+                          //Use this method to add event handlers and styles to
+                          //your node.
+                          onCreateLabel: function(label, node){
+                              label.id = node.id;            
+                              label.innerHTML = node.name;
+                              label.onclick = function(){
+                                  info_display(node.name);
+                                  //st.onClick(node.id);
+                                
+                              };
+
+                              //set label styles
+                              var style = label.style;
+                              style.width = 71 + 'px';
+                              style.height = 83 + 'px';            
+                              style.cursor = 'pointer';
+                              style.color = '#333';
+                              style.fontSize = '1.0em';
+                              style.textAlign= 'center';
+                              style.paddingTop = '25px';
+                          },
+                          
+                          //This method is called right before plotting
+                          //a node. It's useful for changing an individual node
+                          //style properties before plotting it.
+                          //The data properties prefixed with a dollar
+                          //sign will override the global node style properties.
+                          onBeforePlotNode: function(node){
+                              //add some color to the nodes in the path between the
+                              //root node and the selected node.
+                              if (node.selected) {
+                                  node.data.$color = "transparent";
+                              }
+                              else {
+                                delete node.data.$color;
+                                //if the node belongs to the last plotted level
+                                if(!node.anySubnode("exist")) {
+                                    //count children number
+                                    var count = 0;
+                                    node.eachSubnode(function(n) { count++; });
+                                    //assign a node color based on
+                                    //how many children it has
+                                    node.data.$color = ['transparent', 'transparent', 'transparent', 'transparent', 'transparent', 'transparent'][count];                    
+                                }
+                            }
+                          },
+                          
+                          //This method is called right before plotting
+                          //an edge. It's useful for changing an individual edge
+                          //style properties before plotting it.
+                          //Edge data proprties prefixed with a dollar sign will
+                          //override the Edge global style properties.
+                          onBeforePlotLine: function(adj){
+                              if (adj.nodeFrom.selected && adj.nodeTo.selected) {
+                                  adj.data.$color = "#eed";
+                                  adj.data.$lineWidth = 3;
+                              }
+                              else {
+                                  delete adj.data.$color;
+                                  delete adj.data.$lineWidth;
+                              }
+                          }
+                      });
+                      //load json data
+                      st.loadJSON(json);
+                      //compute node positions and layout
+                      st.compute();
+                      //optional: make a translation of the tree
+                      st.geom.translate(new $jit.Complex(-200, 0), "current");
+                      //emulate a click on the root node.
+                      st.onClick(st.root, {
+                        Move: { 
+                           offsetY: 210 
+                       }
+                        
+                        });
+                      //end
+                      //Add event handlers to switch spacetree orientation.
+                      var top = $jit.id('r-top'), 
+                          left = $jit.id('r-left'), 
+                          bottom = $jit.id('r-bottom'), 
+                          right = $jit.id('r-right'),
+                          normal = $jit.id('s-normal');
+                  });    
+                
+              }
+      var app = angular.module('myApp', []);
+      app.controller('PeopleController', function($scope, $http) {
+        $http.get("family_tree.json")
+        .success(function(respond) {
+            $scope.people = respond.people;
+            $scope.years =  ['97 (93學年度)','98 (94學年度)','99 (95學年度)','100(96學年度)','101(97學年度)','102(98學年度)','103(99學年度)','104(100學年度)','105(101學年度)','106(102學年度)','107(103學年度)','108(104學年度)'];   
+            $scope.onload = function(year, id){
+                $(".people").hide();       
+                
+                
+            }   
+            $scope.onload = function(year, id){
+                $(".people").hide();             
+            }   
+           $( ".search_year" ).change(function() {
+              $("#string").delay(1000).fadeIn(1000);
+              $("#contain div").fadeOut(600);
+              var year = "";
+              $( "select option:selected" ).each(function() {
+                year += $( this ).text();
+              });
+              if (year == '97 (93學年度)') {
+                $(".97").delay(800).fadeIn(600);
+              };
+              if (year == '98 (94學年度)') {
+                $(".98").delay(800).fadeIn(600);
+              };
+              if (year == '99 (95學年度)') {
+                $(".99").delay(800).fadeIn(600);
+              };
+              if (year == '100(96學年度)') {
+                $(".100").delay(800).fadeIn(600);
+              };
+              if (year == '101(97學年度)') {
+                $(".101").delay(700).fadeIn(600);
+              };
+              if (year == '102(98學年度)') {
+                $(".102").delay(700).fadeIn(600);
+              };
+              if (year == '103(99學年度)') {
+                $(".103").delay(700).fadeIn(600);
+              };
+              if (year == '104(100學年度)') {
+                $(".104").delay(700).fadeIn(600);
+              };
+              if (year == '105(101學年度)') {
+                $(".105").delay(700).fadeIn(600);
+              };
+              if (year == '106(102學年度)') {
+                $(".106").delay(700).fadeIn(600);
+              };
+              if (year == '107(103學年度)') {
+                $(".107").delay(700).fadeIn(600);
+              };
+              if (year == '108(104學年度)') {
+                $(".108").delay(700).fadeIn(600);
+              };
+            });
+            $scope.infodisplay = function(name, year, leader, member, child){
+              $(".name p").remove();
+              $(".name").append( "<p>"+ name + "</p>" );
+              $(".year p").remove();
+              $(".year").append( "<p>"+ year + "</p>" );
+              $(".leader p").remove();
+              $(".leader").append( "<p>"+ leader + "</p>" );
+              $(".member p").remove();
+              $(".member").append( "<p>"+ member + "</p>" );
+              $(".child p").remove();
+              $(".child").append( "<p>"+ child + "</p>" );
+            }
+            $scope.drop = function(id, name){
+              $('#contain div[data-id="' + id + '"]').fadeOut(500);
+              $('#string, .people').delay(500).fadeOut(500);
+              $('.search_year').val("--select--");
+              create_json(name);
+            }
+            
+            
+            
+            
+        }).error(function() {
+            console.log("Fail to load cetering.json");
+        });
+      });
+      app.directive('ngSlider', function() {
+        return {
+          scope: true,
+          template: "<div class='ng-slider' ng-style='pos'><p>{{x.name}}</p><img src='img/leaf.png'></div>",
+          replace: true,
+          controller: function($scope, $http) { 
+          }
+        };
+      });
+      /*app.directive('draggable', function() {
+        return function(scope, element) {
+          // this gives us the native JS object
+          var el = element[0];
+          
+          el.draggable = true;
+          
+          el.addEventListener(
+            'dragstart',
+            function(e) {
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('Text', this.id);
+              this.classList.add('drag');
+              return false;
+            },
+            false
+          );
+          
+          el.addEventListener(
+            'dragend',
+            function(e) {
+              this.classList.remove('drag');
+              return false;
+            },
+            false
+          );
+        }
+      });
+      app.directive('droppable', function() {
+        return {
+          scope: {
+            drop: '&',
+            bin: '='
+          },
+          link: function(scope, element) {
+            // again we need the native object
+            var el = element[0];
+            
+            el.addEventListener(
+              'dragover',
+              function(e) {
+                e.dataTransfer.dropEffect = 'move';
+                // allows us to drop
+                if (e.preventDefault) e.preventDefault();
+                this.classList.add('over');
+                return false;
+              },
+              false
+            );
+            
+            el.addEventListener(
+              'dragenter',
+              function(e) {
+                this.classList.add('over');
+                return false;
+              },
+              false
+            );
+            
+            el.addEventListener(
+              'dragleave',
+              function(e) {
+                this.classList.remove('over');
+                return false;
+              },
+              false
+            );
+            
+            el.addEventListener(
+              'drop',
+              function(e) {
+                // Stops some browsers from redirecting.
+                if (e.stopPropagation) e.stopPropagation();
+                
+                this.classList.remove('over');
+                
+                var binId = this.id;
+                var item = document.getElementById(e.dataTransfer.getData('Text'));
+                this.appendChild(item);
+                // call the passed drop function
+                scope.$apply(function(scope) {
+                  var fn = scope.drop();
+                  if ('undefined' !== typeof fn) {            
+                    fn(item.id, binId);
+                  }
+                });
+                
+                return false;
+              },
+              false
+            );
+          }
+        }
+      });*/
+    </script>
+
+</body>
+</html>

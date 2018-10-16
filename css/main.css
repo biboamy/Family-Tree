@@ -1,0 +1,214 @@
+/*******************
+ *     global      *
+ ******************/
+html, body {
+	height: auto;
+	width:100%;
+}
+body{
+  min-width: 1049px;
+	background:   -webkit-radial-gradient(center, ellipse cover, #f4f4f4 53%,#f4f4f4 53%,#dbdbdb 100%);
+	background: -moz-radial-gradient(center, ellipse cover, #f4f4f4 53%, #dbdbdb 100%); /* FF3.6+ */
+	background: -ms-radial-gradient(center, ellipse cover, #f4f4f4 53%,#dbdbdb 100%); /* IE10+ */ 	
+}
+*{
+	font-family: FangSong;
+}
+#contain{
+	height: auto;
+}
+
+select {
+  pointer-events: visibleFill !important;
+}
+.jit-autoadjust-label{
+  padding: 0px !important;
+}
+#left_bar{
+  width: 87%;
+  position: relative;
+  overflow-x:scroll;
+  height: 100%; 
+}
+canvas {
+  width: auto !important;
+  height: auto !important;
+}
+/*******************
+ *     tree       *
+ ******************/
+ #string{
+  display: inline-block;
+  width: 84%;
+  float: left;
+ }
+ #string > img{
+ 	z-index: -1;
+ 	opacity: 0.8;
+ }
+ #string .tree{
+ 	width:1044px;
+ 	margin-top: -139px;
+ }
+ #string .baseket{
+ 	width: 100px;
+ 	margin-top: 239px;
+ 	right: 100px;
+ }
+ #string > img:nth-of-type(2){
+ 	margin-left: -8px;
+ }
+ /*******************
+ *     people      *
+ ******************/
+ .people {
+ 	height: 10%;
+    width: 70px;
+    margin-left: 10px;
+    position: absolute;
+    cursor: pointer;   
+ }
+ #contain .people:nth-child(3n+1){
+ 	-webkit-animation:wiggle1 5s linear infinite;
+ }
+ #contain .people:nth-child(3n+2){
+ 	-webkit-animation:wiggle2 5s linear infinite;
+ }
+ #contain .people:nth-child(3n+3){
+ 	-webkit-animation:wiggle3 5s linear infinite;
+ }
+ @-webkit-keyframes wiggle1 {
+	0% {-webkit-transform:rotate(4deg);-webkit-transform-origin: top;}
+	50% {-webkit-transform:rotate(-4deg);-webkit-transform-origin: top;}
+	100% {-webkit-transform:rotate(4deg);-webkit-transform-origin:  top;}
+}
+@-webkit-keyframes wiggle2 {
+	0% {-webkit-transform:rotate(-5deg);-webkit-transform-origin: top;}
+	50% {-webkit-transform:rotate(5deg);-webkit-transform-origin: top;}
+	100% {-webkit-transform:rotate(-5deg);-webkit-transform-origin:  top;}
+}
+@-webkit-keyframes wiggle3 {
+	0% {-webkit-transform:rotate(3deg);-webkit-transform-origin: top;}
+	50% {-webkit-transform:rotate(-3deg);-webkit-transform-origin: top;}
+	100% {-webkit-transform:rotate(3deg);-webkit-transform-origin:  top;}
+}
+ .people p{
+ 	margin-top: 10px;
+ 	margin-left: 11px;
+ 	z-index: 100;
+ 	position: absolute;
+ 	font-weight: 900;
+ 	font-size: 16px;
+ }
+ .people img{
+ 	width:71px;
+ 	z-index: 1;
+ 	position: absolute;
+ }
+ .hide{
+ 	display: none;
+ }
+ /*******************
+ *     right       *
+ ******************/
+ #right_bar{
+ 	background-color: rgba(0,0,0,0.7);
+    height: auto;
+    width: 176px;
+    min-height: 100%;
+    position: fixed;
+    display: inline;
+    top: 0px;
+    z-index: 999;
+    float: right;
+    right: 0px;
+    pointer-events: none;
+ }
+ .title{
+ 	color: white;
+ 	font-size: 30px;
+ 	margin-left: 15px;
+    margin-top: 20px;
+ }
+ hr{
+ 	border: 0;
+    border-top: 1px solid #eee;
+    width: 90%;
+ }
+ #search select{
+ 	margin-left: 15px;
+ 	margin-top: 10px;
+ }
+ #profile .s_title{
+ 	color: white;
+ 	margin-top: 10px;
+    margin-left: 20px;
+ }
+.s_title p{
+	display: inline;
+}
+
+
+ .ng-slider {
+  position: absolute;
+  transition: top 10000ms linear, left 10000ms linear;
+}
+
+/*******************
+ *     pick        *
+ ******************/
+ .pick {
+ 	height: 83px;
+    width: 71px;
+    left: 42%;
+    top: 15px;
+    position: absolute;
+    cursor: pointer;
+ }
+ .pick p{
+ 	margin-top: 26px;
+ 	margin-left: 15px;
+ 	z-index: 100;
+ 	position: absolute;
+ 	font-weight: 900;
+ }
+ .pick img{
+ 	width:71px;
+ 	z-index: 1;
+ 	position: absolute;
+ }
+
+ .bin {
+  min-height: 150px;
+  min-width: 150px;
+  float: left;
+  border: 1px solid red;
+  padding: 20px;
+}
+.item {
+  min-height: 150px;
+  min-width: 150px;
+  background: blue;
+  float: right;
+  transition: all 0.2s ease;
+}
+.drag img{
+  
+}
+.over {
+  background: red;
+}
+
+/*******************
+ *     remind      *
+ ******************/
+#remind {
+  display: none;
+}
+#remind img{
+  width: 8%;
+  position: absolute;
+  top: 20px;
+  right: 15%;
+  
+}
